@@ -1,5 +1,5 @@
 import os ,random,Wallets,Payments,Admin,Giveaway
-os.chdir("./discord")
+os.chdir("D:\Programming\DiscordGamblingBot\DiscordGamblingBot\discord")
 import discord
 os.chdir("../")
 
