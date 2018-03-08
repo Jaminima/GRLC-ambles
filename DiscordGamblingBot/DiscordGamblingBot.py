@@ -36,10 +36,14 @@ async def messagehandler(message):
 		await Wallets.WalletBal(message,client)
 
 	elif message.content.lower().startswith("?deposit"):
-		await client.send_message(message.channel,"Deposit into: "+Payments.Deposit(message,client)+" Then type ?confirm <transid>")
+		await client.send_message(message.channel,"Deposit into: "+Payments.Deposit(message,client)+"Then type ?confirm <transid>")
 
 	elif message.content.lower().startswith("?confirm"):
 		await Payments.Confirm(message,client)
+
+	elif message.content.lower().startswith("?withdraw"):
+		await Payments.PayOut(message,client)
+
 
 @client.event
 async def on_ready():

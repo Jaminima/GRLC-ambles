@@ -30,6 +30,7 @@ def Deposit(message,client):
 	return Address
 
 async def Confirm(message,client):
+	UpdateWallet()
 	TransId=message.content.split(" ")[1]
 	Address=open(DepositAddresses+"/"+message.author.id+".bin","r").read()
 	TransactionContent = Giveaway.GetTransaction(TransId)
@@ -43,3 +44,15 @@ async def Confirm(message,client):
 		await Wallets.Bal(message,client)
 	else:
 		await client.send_message(message.channel,"Invalid TransID <@"+message.author.id+">")
+
+async def PayOut(message,client):
+    GRLCOut=message.content.split(" ")[1]
+    Address=message.content.split(" ")[2]
+    CurGRLC=open(WalletLocation+"/"+message.author.id+".bin","r").read()
+    if GRLCOut<=CurGRLC:
+        open(WalletLocation+"/"+message.author.id+".bin","w").write(str(float(CurGRLC)-float(GRLCOut)))
+        subprocess.call("./GarlicoinFiles/garlicoin-cli walletpassphrase Jaminima48Will4 10")
+        TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli sendtoaddress "+Address+" "+str(round(float(GRLCOut)*0.9,3))).decode("utf-8")
+        await client.send_message(message.channel,"Payment Sent. TransId: "+TransId)
+    else:
+        await client.send_message(message.channel,"Not Enough GRLC")
