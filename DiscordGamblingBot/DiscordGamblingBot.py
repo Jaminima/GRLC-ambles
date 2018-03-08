@@ -47,21 +47,24 @@ async def messagehandler(message):
 		await client.delete_message(message)
 
 	elif message.content.lower().startswith("?help"):
-		await client.send_message(message.channel,"-------GRLC-ambles-------\n")
-		Help="?help giveaway -- Show help for giveaways\n?help wallet -- Show help for wallets"
+		Help="<@"+message.author.id+">\n-------GRLC-ambles-------\nFeel free to donate GRLC using `?donate`\n"
+		THelp="?help giveaway -- Show help for giveaways\n?help wallet -- Show help for wallets"
 		try:
 			if message.content.split(" ")[1].lower()=="giveaway":
-				Help="?giveawayjoin -- Join the giveaway (make sure you have done `?bal` to create your wallet!)\n?giveawaybalance -- Gives giveaway value"
+				THelp="\n?giveawayjoin -- Join the giveaway (make sure you have done `?bal` to create your wallet!)\n?giveawaybalance -- Gives giveaway value"
 			elif message.content.split(" ")[1].lower()=="wallet":
-				Help="?bal -- View you balance\n?balother <userid> -- View balance of someone else\n?pay <reciveraddress> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address>"
+				THelp="\n?bal -- View you balance\n?balother <userid> -- View balance of someone else\n?pay <reciveraddress> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address>"
 		except:
 			null=0
-		await client.send_message(message.channel,Help)
+		await client.send_message(message.channel,Help+THelp)
 		await client.delete_message(message)
 
 	elif message.content.lower().startswith("?giveawaybalance"):
 		bal = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","r").read()
-		await client.send_message(message.channel,"Giveaway value is: "+bal+"GRLC")
+		if bal != 0:
+			await client.send_message(message.channel,"Giveaway value is: "+bal+"GRLC")
+		else:
+			await client.send_message(message.channel,"Giveaway value is offline!")
 		await client.delete_message(message)
 
 	elif message.content.lower().startswith("?giveawayjoin"):
@@ -76,6 +79,8 @@ async def messagehandler(message):
 		await Admin.EndGiveaway(message,client)
 		await client.delete_message(message)
 
+	elif message.content.lower().startswith("?donate"):
+		await client.send_message(message.channel,"Feel free to donate GRLC to `GbWPXrJw2zN6wCu7bFSuGFBXaW4njEdBQV`")
 
 @client.event
 async def on_ready():
