@@ -3,7 +3,7 @@ os.chdir("./discord")
 import discord
 os.chdir("../")
 
-WalletPassPhrase = input("WalletPassPhrase: ")
+WalletPassPhrase = input("WalletPassPhrase (blank for no payouts): ")
 WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
 DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
 AdminIDs = {"251754144958906369","421228709425446912"}
