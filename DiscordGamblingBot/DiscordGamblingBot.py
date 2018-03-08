@@ -28,13 +28,6 @@ async def messagehandler(message):
 	elif message.content.lower().startswith("?createfunds"):
 		await Admin.CreateFunds(message,client)
 
-	elif message.content.lower().startswith("?help"):
-		Help="helpful Stuff"
-		await client.send_message(message.channel,Help)
-
-	elif message.content.lower().startswith("?walletbal"):
-		await Wallets.WalletBal(message,client)
-
 	elif message.content.lower().startswith("?deposit"):
 		await client.send_message(message.channel,"Deposit into: "+Payments.Deposit(message,client)+"Then type ?confirm <transid>")
 
@@ -43,6 +36,10 @@ async def messagehandler(message):
 
 	elif message.content.lower().startswith("?withdraw"):
 		await Payments.PayOut(message,client)
+
+	elif message.content.lower().startswith("?help"):
+		Help="-------GRLC-ambles-------\n?bal -- View you balance\n?balother <userid> -- View balance of someone else\n?pay <reciveraddress> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address>"
+		await client.send_message(message.channel,Help)
 
 
 @client.event

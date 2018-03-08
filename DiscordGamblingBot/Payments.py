@@ -3,6 +3,7 @@ os.chdir("./discord")
 import discord
 os.chdir("../")
 
+WalletPassPhrase = input("WalletPassPhrase: ")
 WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
 DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
 AdminIDs = {"251754144958906369"}
@@ -26,7 +27,7 @@ def Deposit(message,client):
 		Address=open(DepositAddresses+"/"+Target+".bin","r").read()
 	else:
 		Address=CreateNewRecivingAddress()
-		open(DepositAddresses+"/"+Target+".bin","w").write(Address)
+		open(DepositAddresses+"/"+Target+".bin","w").write(Address.splitlines()[0])
 	return Address
 
 async def Confirm(message,client):
@@ -51,7 +52,7 @@ async def PayOut(message,client):
     CurGRLC=open(WalletLocation+"/"+message.author.id+".bin","r").read()
     if GRLCOut<=CurGRLC:
         open(WalletLocation+"/"+message.author.id+".bin","w").write(str(float(CurGRLC)-float(GRLCOut)))
-        subprocess.call("./GarlicoinFiles/garlicoin-cli walletpassphrase Jaminima48Will4 10")
+        subprocess.call("./GarlicoinFiles/garlicoin-cli walletpassphrase "+DiscordGamblingBot+" 10")
         TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli sendtoaddress "+Address+" "+str(round(float(GRLCOut)*0.9,3))).decode("utf-8")
         await client.send_message(message.channel,"Payment Sent. TransId: "+TransId)
     else:

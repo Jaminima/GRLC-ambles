@@ -11,7 +11,7 @@ async def Bal(message,client):
 	if os.path.exists(WalletLocation+"/"+message.author.id+".bin"):
 		await client.send_message(message.channel,"{0.author.mention} You Have: ".format(message)+open(WalletLocation+"/"+message.author.id+".bin","r").read()+"GRLC")
 	else:
-		await client.send_message(message.channel,"{0.author.mention} You dont appear to have a wallet".format(message))
+		await client.send_message(message.channel,"{0.author.mention} You dont appear to have a wallet, one has now been created for you.".format(message))
 		open(WalletLocation+"/"+message.author.id+".bin","w").write("0")
 
 async def BalOther(message,client):
