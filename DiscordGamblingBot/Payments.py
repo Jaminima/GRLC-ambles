@@ -12,7 +12,6 @@ import subprocess,json
 
 def RunWallet():
     subprocess.Popen("./GarlicoinFiles/garlicoind -datadir=./GarlicoinFiles/AppData")
-    UpdateWallet()
 
 def UpdateWallet():
     subprocess.call("./GarlicoinFiles/garlicoin-cli getblockchaininfo")
@@ -32,7 +31,6 @@ def Deposit(message,client):
     return Address
 
 async def Confirm(message,client):
-    UpdateWallet()
     TransId=message.content.split(" ")[1]
     Address=open(DepositAddresses+"/"+message.author.id+".bin","r").read()
     TransactionContent = Giveaway.GetTransaction(TransId)
@@ -48,7 +46,7 @@ async def Confirm(message,client):
         await client.send_message(message.channel,"Invalid TransID <@"+message.author.id+">")
 
 async def PayOut(message,client):
-    PayoutsOn=False
+    PayoutsOn=True
 
     if PayoutsOn:
         GRLCOut=message.content.split(" ")[1]
@@ -56,7 +54,7 @@ async def PayOut(message,client):
         CurGRLC=open(WalletLocation+"/"+message.author.id+".bin","r").read()
         if GRLCOut<=CurGRLC:
             open(WalletLocation+"/"+message.author.id+".bin","w").write(str(float(CurGRLC)-float(GRLCOut)))
-            subprocess.call("./GarlicoinFiles/garlicoin-cli walletpassphrase "+DiscordGamblingBot+" 10")
+            subprocess.call("./GarlicoinFiles/garlicoin-cli walletpassphrase "+WalletPassPhrase+" 60")
             TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli sendtoaddress "+Address+" "+str(round(float(GRLCOut)*0.9,3))).decode("utf-8")
             await client.send_message(message.channel,"Payment Sent. TransId: "+TransId)
         else:

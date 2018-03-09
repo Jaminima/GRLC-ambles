@@ -1,5 +1,5 @@
 @echo off
 :main
 garlicoin-cli getblockchaininfo
-pause
+timeout 60
 goto main
