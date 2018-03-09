@@ -57,7 +57,7 @@ async def messagehandler(message):
             elif message.content.split(" ")[1].lower()=="admin":
                 THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <userid> <GRLC> -- Its obvious"
             elif message.content.split(" ")[1].lower()=="jackpot":
-                THelp="\n?jackpot join <GRLC> -- Join the Jackpot with <GRLC>\n?jackpot bal -- Return current Jackpot Balance"
+                THelp="\n?jackpot join <GRLC> -- Join the Jackpot with <GRLC>\n?jackpot bal -- Return current Jackpot Balance\n?jackpot count -- Participants in the jackpot"
         except:
             null=0
         await client.send_message(message.channel,Help+THelp)

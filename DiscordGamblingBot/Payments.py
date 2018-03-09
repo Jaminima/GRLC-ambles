@@ -56,7 +56,7 @@ async def PayOut(message,client):
             open(WalletLocation+"/"+message.author.id+".bin","w").write(str(float(CurGRLC)-float(GRLCOut)))
             subprocess.call("./GarlicoinFiles/garlicoin-cli walletpassphrase "+WalletPassPhrase+" 60")
             TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli sendtoaddress "+Address+" "+str(round(float(GRLCOut)*0.9,3))).decode("utf-8")
-            await client.send_message(message.channel,"Payment Sent. TransId: "+TransId)
+            await client.send_message(message.channel,"Payment Sent. TransId: "+TransId+"\nIt make take around 15mins for the transaction to register!")
         else:
             await client.send_message(message.channel,"Not Enough GRLC")
     else:
