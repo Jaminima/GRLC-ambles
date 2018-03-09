@@ -1,0 +1,1 @@
+garlicoind -datadir=./GarlicoinFiles/AppData
