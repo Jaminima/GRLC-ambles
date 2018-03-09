@@ -28,6 +28,9 @@
     <Compile Include="Giveaway.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Jackpot.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Payments.py" />
     <Compile Include="Wallets.py">
       <SubType>Code</SubType>

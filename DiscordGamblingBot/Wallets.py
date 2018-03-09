@@ -12,12 +12,12 @@ async def Bal(message,client):
 		await client.send_message(message.channel,"{0.author.mention} You Have: ".format(message)+open(WalletLocation+"/"+message.author.id+".bin","r").read()+"GRLC")
 	else:
 		await client.send_message(message.channel,"{0.author.mention} You dont appear to have a wallet, one has now been created for you.".format(message))
-		open(WalletLocation+"/"+message.author.id+".bin","w").write("0")
+		open(WalletLocation+"/"+message.author.id+".bin","w").write("10")
 
 async def BalOther(message,client):
 	Target = message.content.split(" ")[1]
 	if os.path.exists(WalletLocation+"/"+Target+".bin"):
-		await client.send_message(message.channel,"<@"+Target+"> Has: ".format(message)+open(WalletLocation+"/"+Target+".bin","r").read())
+		await client.send_message(message.channel,"<@"+Target+"> Has: ".format(message)+open(WalletLocation+"/"+Target+".bin","r").read()+"GRLC")
 	else:
 		await client.send_message(message.channel,Target+" Does Not Have A Wallet")
 
