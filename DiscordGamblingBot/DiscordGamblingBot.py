@@ -1,6 +1,6 @@
 import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot
 os.chdir("D:\Programming\DiscordGamblingBot\DiscordGamblingBot\discord")
-import discord,threading
+import discord,threading,subprocess
 os.chdir("../")
 from _thread import *
 from discord.ext import commands
@@ -55,7 +55,7 @@ async def messagehandler(message):
             elif message.content.split(" ")[1].lower()=="wallet":
                 THelp="\n?bal -- View you balance\n?balother <userid> -- View balance of someone else\n?pay <userid> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address>"
             elif message.content.split(" ")[1].lower()=="admin":
-                THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <userid> <GRLC> -- Its obvious"
+                THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <userid> <GRLC> -- Its obvious\n?shutdown -- What do you think?"
             elif message.content.split(" ")[1].lower()=="jackpot":
                 THelp="\n?jackpot join <GRLC> -- Join the Jackpot with <GRLC>\n?jackpot bal -- Return current Jackpot Balance\n?jackpot count -- Participants in the jackpot"
         except:
@@ -85,15 +85,28 @@ async def messagehandler(message):
 
     elif message.content.lower().startswith("?donate"):
         await client.send_message(message.channel,"Feel free to donate GRLC to `GbWPXrJw2zN6wCu7bFSuGFBXaW4njEdBQV`")
+        await client.delete_message(message)
 
     elif message.content.lower().startswith("?jackpot join"):
         await Jackpot.AddParticipant(message,client)
+        await client.delete_message(message)
 
     elif message.content.lower().startswith("?jackpot bal"):
         await Jackpot.Balance(message,client)
+        await client.delete_message(message)
 
     elif message.content.lower().startswith("?jackpot count"):
         await Jackpot.CountParticipants(message,client)
+        await client.delete_message(message)
+
+    elif message.content.lower().startswith("?shutdown"):
+        await client.delete_message(message)
+        if message.author.id in AdminIDs:
+            await client.send_message(message.channel,"Bot Shutting Down")
+            subprocess.Popen("./GarlicoinFiles/garlicoin-cli stop")
+            exit()
+        else:
+            await client.send_message(message.channel,"You do not have required perms")
 
 @client.event
 async def on_ready():
