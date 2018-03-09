@@ -55,4 +55,4 @@ async def Balance(message,client):
     await client.send_message(message.channel,"The Jackpot Balance is: "+str(TotalGRLC)+"GRLC")
 
 async def CountParticipants(message,client):
-    await client.send_message(message.channel,"<@"+WinnerID+"> There are: "+str(len(Participants))+"/5 Participants.\nType `?jackpot join <GRLC>` to participate.") 
+    await client.send_message(message.channel,"<@"+message.author.id+"> There are: "+str(len(Participants))+"/5 Participants.\nType `?jackpot join <GRLC>` to participate.") 
