@@ -8,7 +8,7 @@ from discord.ext import commands
 client = discord.Client()
 WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
 DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
-AdminIDs = {"251754144958906369","421228709425446912"}
+AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/AdminIDs.bin","r").read()
 Payments.RunWallet()
 
 @client.event
@@ -48,18 +48,20 @@ async def messagehandler(message):
 
 	elif message.content.lower().startswith("?help"):
 		Help="<@"+message.author.id+">\n-------GRLC-ambles-------\nFeel free to donate GRLC using `?donate`\n"
-		THelp="?help giveaway -- Show help for giveaways\n?help wallet -- Show help for wallets"
+		THelp="?help giveaway -- Show help for giveaways\n?help wallet -- Show help for wallets\n?help admin -- Show help for admin commands"
 		try:
 			if message.content.split(" ")[1].lower()=="giveaway":
-				THelp="\n?giveawayjoin -- Join the giveaway (make sure you have done `?bal` to create your wallet!)\n?giveawaybalance -- Gives giveaway value"
+				THelp="\n?giveaway join -- Join the giveaway (make sure you have done `?bal` to create your wallet!)\n?giveaway balance -- Gives giveaway value"
 			elif message.content.split(" ")[1].lower()=="wallet":
-				THelp="\n?bal -- View you balance\n?balother <userid> -- View balance of someone else\n?pay <reciveraddress> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address>"
+				THelp="\n?bal -- View you balance\n?balother <userid> -- View balance of someone else\n?pay <userid> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address>"
+			elif message.content.split(" ")[1].lower()=="admin":
+				THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <userid> <GRLC> -- Its obvious"
 		except:
 			null=0
 		await client.send_message(message.channel,Help+THelp)
 		await client.delete_message(message)
 
-	elif message.content.lower().startswith("?giveawaybalance"):
+	elif message.content.lower().startswith("?giveaway bal"):
 		bal = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","r").read()
 		if bal != 0:
 			await client.send_message(message.channel,"Giveaway value is: "+bal+"GRLC")
@@ -67,15 +69,15 @@ async def messagehandler(message):
 			await client.send_message(message.channel,"Giveaway value is offline!")
 		await client.delete_message(message)
 
-	elif message.content.lower().startswith("?giveawayjoin"):
+	elif message.content.lower().startswith("?giveaway join"):
 		await Giveaway.AddParticipant(message,client)
 		await client.delete_message(message)
 
-	elif message.content.lower().startswith("?giveawaystart"):
+	elif message.content.lower().startswith("?giveaway start"):
 		await Admin.StartGiveaway(message,client)
 		await client.delete_message(message)
 
-	elif message.content.lower().startswith("?giveawayend"):
+	elif message.content.lower().startswith("?giveaway end"):
 		await Admin.EndGiveaway(message,client)
 		await client.delete_message(message)
 

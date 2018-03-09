@@ -5,7 +5,7 @@ os.chdir("../")
 
 WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
 DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
-AdminIDs = {"251754144958906369","421228709425446912"}
+AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/AdminIDs.bin","r").read()
 
 async def CreateFunds(message,client):
 	Reciver=message.content.split(" ")[1]
@@ -22,7 +22,7 @@ async def CreateFunds(message,client):
 
 async def StartGiveaway(message,client):
     if message.author.id in AdminIDs:
-        Giveaway.StartGiveaway(message.content.split(" ")[1])
+        Giveaway.StartGiveaway(message.content.split(" ")[2])
         await client.send_message(message.channel,"Created Giveaway")
     else:
         await client.send_message(message.channel,"You do not have required perms")

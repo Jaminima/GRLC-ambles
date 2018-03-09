@@ -5,7 +5,7 @@ os.chdir("../")
 
 WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
 DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
-AdminIDs = {"251754144958906369","421228709425446912"}
+AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/AdminIDs.bin","r").read()
 
 async def Bal(message,client):
 	if os.path.exists(WalletLocation+"/"+message.author.id+".bin"):

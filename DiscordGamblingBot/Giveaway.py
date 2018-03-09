@@ -5,7 +5,7 @@ os.chdir("../")
 
 WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
 DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
-AdminIDs = {"251754144958906369","421228709425446912"}
+AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/AdminIDs.bin","r").read()
 
 Participants = []
 
@@ -36,7 +36,7 @@ def StartGiveaway(giveaway):
 def EndGiveaway(client):
 	Winner = Participants[random.randint(0,len(Participants)-1)]
 	CurBal = float( open(WalletLocation+"/"+Winner+".bin","r").read())
-	GiveawayValue = int( open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","r").read())
+	GiveawayValue = float( open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","r").read())
 	open(WalletLocation+"/"+Winner+".bin","w").write(str(CurBal+GiveawayValue))
 	open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","w").write("0")
 	return Winner
