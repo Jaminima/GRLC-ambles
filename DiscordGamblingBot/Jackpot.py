@@ -1,6 +1,6 @@
 import os ,random,Wallets,Payments,Admin,Giveaway
 os.chdir("D:\Programming\DiscordGamblingBot\DiscordGamblingBot\discord")
-import discord
+import discord,time
 os.chdir("../")
 
 WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
@@ -9,6 +9,7 @@ AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/A
 
 Participants = []
 Deposited = []
+Finishing = False
 
 async def AddParticipant(message,client):
     if os.path.exists(WalletLocation+"/"+message.author.id+".bin"):
@@ -28,11 +29,12 @@ async def AddParticipant(message,client):
     await FinishCheck(message,client)
 
 async def FinishCheck(message,client):
-    global Participants,Deposited
+    global Participants,Deposited,Finishing
     TotalGRLC = 0
     for GRLC in Deposited:
         TotalGRLC+=float(GRLC)
-    if len(Participants)>=5:
+    if len(Participants)>=5 and Finishing==False:
+        Finishing=True
         WinnerAtGRLC=random.randint(0,TotalGRLC)
         WinnerTotalGRLC = 0
         WinnerFound = False
@@ -41,12 +43,18 @@ async def FinishCheck(message,client):
             if WinnerTotalGRLC>=WinnerAtGRLC and WinnerFound==False:
                 WinnerFound=True
                 WinnerID=Participants[i]
+        msg = await client.send_message(message.channel,"The winner is:")
+        for i in range(0,10):
+            CurUSR = Participants[random.randint(0,len(Participants)-1)]
+            await client.edit_message(msg,"The winner is: <@"+CurUSR+">")
+        await client.delete_message(msg)
 
         await client.send_message(message.channel,"<@"+WinnerID+"> Won "+str(TotalGRLC)+"GRLC!")
         CurGLRC=float( open(WalletLocation+"/"+WinnerID+".bin","r").read())
         open(WalletLocation+"/"+WinnerID+".bin","w").write(str(TotalGRLC+CurGLRC))
         Participants=[]
         Deposited=[]
+        Finishing=False
 
 async def Balance(message,client):
     TotalGRLC = 0
