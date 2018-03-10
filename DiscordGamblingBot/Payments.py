@@ -49,13 +49,16 @@ async def Confirm(message,client):
         await client.send_message(message.channel,"Invalid TransID <@"+message.author.id+">")
 
 async def PayOut(message,client):
-    PayoutsOn=True
+    if WalletPassPhrase=="":
+        PayoutsOn=False
+    else:
+        PayoutsOn=True
 
     if PayoutsOn:
         GRLCOut=message.content.split(" ")[1]
         Address=message.content.split(" ")[2]
         CurGRLC=open(WalletLocation+"/"+message.author.id+".bin","r").read()
-        if GRLCOut<=CurGRLC:
+        if GRLCOut<=CurGRLC and float(GRLCOut)>=1.0:
             msg=await client.send_message(message.channel,"Sending Funds!\nExpect delays on commands!")
             open(WalletLocation+"/"+message.author.id+".bin","w").write(str(float(CurGRLC)-float(GRLCOut)))
             subprocess.call("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData walletpassphrase "+WalletPassPhrase+" 60")
@@ -63,6 +66,6 @@ async def PayOut(message,client):
             await client.delete_message(msg)
             await client.send_message(message.channel,"<@"+message.author.id+">Payment Sent. TransId: `"+TransId+"`\nIt may take around 15mins for the transaction to register!")
         else:
-            await client.send_message(message.channel,"Not Enough GRLC")
+            await client.send_message(message.channel,"<@"+message.author.id+"> Not Enough GRLC or You are trying to withdraw >`1.0GRLC`!")
     else:
         await client.send_message(message.channel,"<@"+message.author.id+"> Payouts are disabled!\nThey should be enabled soon.")
