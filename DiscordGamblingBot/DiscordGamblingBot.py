@@ -35,9 +35,16 @@ async def messagehandler(message):
         await client.delete_message(message)
 
     elif message.content.lower().startswith("?deposit"):
-        await client.send_message(message.channel,"Deposit into: "+Payments.Deposit(message,client)+"Then type ?confirm <transid>")
+        mes = await client.send_message(message.channel,"Generating Address!\nExpect delays on commands!")
+        try:
+            print("Success")
+            await client.send_message(message.channel,"<@"+message.author.id+"> Deposit into: `"+Payments.Deposit(message,client)+"` Then type `?confirm <transid>`")
+        except:
+            print("Failed")
+            await client.send_message(message.channel,"<@"+message.author.id+"> Failed to load/make deposit address!\nWait a min and type `?deposit` again.")
         await client.delete_message(message)
-
+        await client.delete_message(mes)
+        
     elif message.content.lower().startswith("?confirm"):
         await Payments.Confirm(message,client)
         await client.delete_message(message)

@@ -13,9 +13,6 @@ import subprocess,json
 def RunWallet():
     subprocess.Popen("./GarlicoinFiles/garlicoind -datadir=./GarlicoinFiles/AppData")
 
-def UpdateWallet():
-    subprocess.call("./GarlicoinFiles/garlicoin-cli getblockchaininfo")
-
 def CreateNewRecivingAddress():
     address=subprocess.check_output("./GarlicoinFiles/garlicoin-cli getnewaddress").decode("utf-8")
     return address
@@ -26,6 +23,7 @@ def Deposit(message,client):
     if os.path.exists(DepositAddresses+"/"+Target+".bin"):
         Address=open(DepositAddresses+"/"+Target+".bin","r").read()
     else:
+        print("Generating Address")
         Address=CreateNewRecivingAddress()
         open(DepositAddresses+"/"+Target+".bin","w").write(Address.splitlines()[0])
     return Address
