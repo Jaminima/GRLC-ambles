@@ -43,7 +43,7 @@ async def Confirm(message,client):
                 CurBal=float(open(WalletLocation+"/"+message.author.id+".bin","r").read())
             except:
                 CurBal=0
-            open(WalletLocation+"/"+message.author.id+".bin","w").write(str(CurBal+GRLC))
+            open(WalletLocation+"/"+message.author.id+".bin","w").write(str(round(CurBal+GRLC,3)))
             Confirmed = True
     if Confirmed == False:
         await client.send_message(message.channel,"Invalid TransID <@"+message.author.id+">")
@@ -58,9 +58,9 @@ async def PayOut(message,client):
         GRLCOut=message.content.split(" ")[1]
         Address=message.content.split(" ")[2]
         CurGRLC=open(WalletLocation+"/"+message.author.id+".bin","r").read()
-        if GRLCOut<=CurGRLC and float(GRLCOut)>=1.0:
+        if GRLCOut<=CurGRLC and float(GRLCOut)>=2.0:
             msg=await client.send_message(message.channel,"Sending Funds!\nExpect delays on commands!")
-            open(WalletLocation+"/"+message.author.id+".bin","w").write(str(float(CurGRLC)-float(GRLCOut)))
+            open(WalletLocation+"/"+message.author.id+".bin","w").write(str(round(float(CurGRLC)-float(GRLCOut),3)))
             subprocess.call("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData walletpassphrase "+WalletPassPhrase+" 60")
             TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData sendtoaddress "+Address+" "+str(round(float(GRLCOut)*0.9,3)),timeout=120).decode("utf-8")
             await client.delete_message(msg)

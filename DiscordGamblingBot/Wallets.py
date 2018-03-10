@@ -29,11 +29,10 @@ async def Pay(message,client):
 	if os.path.exists(WalletLocation+"/"+Sender+".bin") and os.path.exists(WalletLocation+"/"+Reciver+".bin"):
 		TransferedAmount = float(message.content.split(" ")[2])
 		if SenderBal-TransferedAmount >= 0:
-			open(WalletLocation+"/"+Sender+".bin","w").write(str(SenderBal-TransferedAmount))
-			open(WalletLocation+"/"+Reciver+".bin","w").write(str(ReciverBal+TransferedAmount))
+			open(WalletLocation+"/"+Sender+".bin","w").write(str(round(SenderBal-TransferedAmount,3)))
+			open(WalletLocation+"/"+Reciver+".bin","w").write(str(round(ReciverBal+TransferedAmount,3)))
 			await client.send_message(message.channel,("{0.author.mention} Payment Sent Of "+str(TransferedAmount)+"GRLC").format(message))
 		else:
 			await client.send_message(message.channel,"{0.author.mention} You dont have enough funds".format(message))
 	else:
 		await client.send_message(message.channel,"You or the Recipiant do not have a wallet!")
-		

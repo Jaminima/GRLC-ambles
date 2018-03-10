@@ -35,7 +35,7 @@ async def FinishCheck(message,client):
         TotalGRLC+=float(GRLC)
     if len(Participants)>=5 and Finishing==False:
         Finishing=True
-        WinnerAtGRLC=random.randint(0,TotalGRLC)
+        WinnerAtGRLC=random.randint(0,int(round(TotalGRLC,0)))
         WinnerTotalGRLC = 0
         WinnerFound = False
         for i in range(0,len(Participants)):
@@ -51,7 +51,7 @@ async def FinishCheck(message,client):
 
         await client.send_message(message.channel,"<@"+WinnerID+"> Won "+str(TotalGRLC)+"GRLC!")
         CurGLRC=float( open(WalletLocation+"/"+WinnerID+".bin","r").read())
-        open(WalletLocation+"/"+WinnerID+".bin","w").write(str(TotalGRLC+CurGLRC))
+        open(WalletLocation+"/"+WinnerID+".bin","w").write(str(round(TotalGRLC+CurGLRC,3)))
         Participants=[]
         Deposited=[]
         Finishing=False
@@ -70,5 +70,5 @@ async def ReturnFunds(message,client):
     for Pos in range(0,len(Participants)):
         AtWho+="<@"+Participants[Pos]+"> "
         CurBal =float( open(WalletLocation+"/"+Participants[Pos]+".bin","r").read())
-        open(WalletLocation+"/"+Participants[Pos]+".bin","w").write(str(CurBal+Deposited[Pos]))
+        open(WalletLocation+"/"+Participants[Pos]+".bin","w").write(str(round(CurBal+Deposited[Pos],3)))
     await client.send_message(message.channel,AtWho+"The Jackpot has terminated. Your GRLC has been returned!")

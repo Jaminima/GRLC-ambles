@@ -22,8 +22,7 @@ async def CreateFunds(message,client):
 
 async def StartGiveaway(message,client):
     if message.author.id in AdminIDs:
-        Giveaway.StartGiveaway(message.content.split(" ")[2])
-        await client.send_message(message.channel,"Created Giveaway")
+        await Giveaway.StartGiveaway(message,client)
     else:
         await client.send_message(message.channel,"You do not have required perms")
 
