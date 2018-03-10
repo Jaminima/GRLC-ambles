@@ -39,7 +39,10 @@ async def Confirm(message,client):
             await client.send_message(message.channel,"Deposit Confirmed <@"+message.author.id+">")
             GRLC = float(JsonTransaction["vout"][AddressN]["value"])
             open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/UsedTransIDs.bin","a").write("\n"+TransId)
-            CurBal=float(open(WalletLocation+"/"+message.author.id+".bin","r").read())
+            try:
+                CurBal=float(open(WalletLocation+"/"+message.author.id+".bin","r").read())
+            except:
+                CurBal=0
             open(WalletLocation+"/"+message.author.id+".bin","w").write(str(CurBal+GRLC))
             Confirmed = True
     if Confirmed == False:
@@ -58,7 +61,7 @@ async def PayOut(message,client):
             subprocess.call("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData walletpassphrase "+WalletPassPhrase+" 60")
             TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData sendtoaddress "+Address+" "+str(round(float(GRLCOut)*0.9,3)),timeout=120).decode("utf-8")
             await client.delete_message(msg)
-            await client.send_message(message.channel,"Payment Sent. TransId: `"+TransId+"`\nIt make take around 15mins for the transaction to register!")
+            await client.send_message(message.channel,"<@"+message.author.id+">Payment Sent. TransId: `"+TransId+"`\nIt may take around 15mins for the transaction to register!")
         else:
             await client.send_message(message.channel,"Not Enough GRLC")
     else:

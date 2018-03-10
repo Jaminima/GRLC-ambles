@@ -44,7 +44,7 @@ async def messagehandler(message):
             await client.send_message(message.channel,"<@"+message.author.id+"> Failed to load/make deposit address!\nWait a min and type `?deposit` again.")
         await client.delete_message(message)
         await client.delete_message(mes)
-        
+
     elif message.content.lower().startswith("?confirm"):
         await Payments.Confirm(message,client)
         await client.delete_message(message)
@@ -110,6 +110,7 @@ async def messagehandler(message):
         await client.delete_message(message)
         if message.author.id in AdminIDs:
             await client.send_message(message.channel,"Bot Shutting Down")
+            await Jackpot.ReturnFunds(message,client)
             subprocess.Popen("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 stop")
             exit()
         else:
