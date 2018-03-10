@@ -62,7 +62,7 @@ async def PayOut(message,client):
             msg=await client.send_message(message.channel,"Sending Funds!\nExpect delays on commands!")
             open(WalletLocation+"/"+message.author.id+".bin","w").write(str(round(float(CurGRLC)-float(GRLCOut),3)))
             subprocess.call("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData walletpassphrase "+WalletPassPhrase+" 60")
-            TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData sendtoaddress "+Address+" "+str(round(float(GRLCOut)*0.9,3)),timeout=120).decode("utf-8")
+            TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData sendtoaddress "+Address+" "+str(abs(round(float(GRLCOut)*0.9,3))),timeout=120).decode("utf-8")
             await client.delete_message(msg)
             await client.send_message(message.channel,"<@"+message.author.id+">Payment Sent. TransId: `"+TransId+"`\nIt may take around 15mins for the transaction to register!")
         else:

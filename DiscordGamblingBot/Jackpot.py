@@ -14,9 +14,9 @@ Finishing = False
 async def AddParticipant(message,client):
     if os.path.exists(WalletLocation+"/"+message.author.id+".bin"):
         CurBal = float( open(WalletLocation+"/"+message.author.id+".bin","r").read())
-        GRLC = float( message.content.split(" ")[2])
+        GRLC = abs(float( message.content.split(" ")[2]))
         if CurBal>=GRLC and message.author.id not in Participants and GRLC>=0.1:
-            NewBal = CurBal-GRLC
+            NewBal = round(CurBal-GRLC,3)
             open(WalletLocation+"/"+message.author.id+".bin","w").write(str(NewBal))
             Participants.append(message.author.id)
             Deposited.append(GRLC)

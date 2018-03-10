@@ -27,7 +27,7 @@ async def Pay(message,client):
 	SenderBal = float( open(WalletLocation+"/"+Sender+".bin","r").read())
 	ReciverBal = float( open(WalletLocation+"/"+Reciver+".bin","r").read())
 	if os.path.exists(WalletLocation+"/"+Sender+".bin") and os.path.exists(WalletLocation+"/"+Reciver+".bin"):
-		TransferedAmount = float(message.content.split(" ")[2])
+		TransferedAmount = abs(float(message.content.split(" ")[2]))
 		if SenderBal-TransferedAmount >= 0:
 			open(WalletLocation+"/"+Sender+".bin","w").write(str(round(SenderBal-TransferedAmount,3)))
 			open(WalletLocation+"/"+Reciver+".bin","w").write(str(round(ReciverBal+TransferedAmount,3)))
