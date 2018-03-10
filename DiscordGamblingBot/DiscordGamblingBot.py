@@ -110,7 +110,7 @@ async def messagehandler(message):
         await client.delete_message(message)
         if message.author.id in AdminIDs:
             await client.send_message(message.channel,"Bot Shutting Down")
-            subprocess.Popen("./GarlicoinFiles/garlicoin-cli stop")
+            subprocess.Popen("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 stop")
             exit()
         else:
             await client.send_message(message.channel,"You do not have required perms")

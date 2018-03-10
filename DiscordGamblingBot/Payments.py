@@ -11,10 +11,10 @@ AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/A
 import subprocess,json
 
 def RunWallet():
-    subprocess.Popen("./GarlicoinFiles/garlicoind -datadir=./GarlicoinFiles/AppData")
+    subprocess.Popen("./GarlicoinFiles/garlicoind -datadir=./GarlicoinFiles/AppData -rpcport=52068 -port=52069")
 
 def CreateNewRecivingAddress():
-    address=subprocess.check_output("./GarlicoinFiles/garlicoin-cli getnewaddress").decode("utf-8")
+    address=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -datadir=./GarlicoinFiles/AppData -rpcport=52068 -port=52069 getnewaddress").decode("utf-8")
     return address
 
 def Deposit(message,client):
@@ -33,14 +33,16 @@ async def Confirm(message,client):
     Address=open(DepositAddresses+"/"+message.author.id+".bin","r").read()
     TransactionContent = Giveaway.GetTransaction(TransId)
     JsonTransaction = json.loads(TransactionContent)
-    if (Address == JsonTransaction["vout"][0]["scriptPubKey"]["addresses"][0]) and (TransId not in open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/UsedTransIDs.bin","r").read()):
-        await client.send_message(message.channel,"Deposit Confirmed <@"+message.author.id+">")
-        GRLC = float(JsonTransaction["vout"][0]["value"])
-        open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/UsedTransIDs.bin","a").write("\n"+TransId)
-        CurBal=float(open(WalletLocation+"/"+message.author.id+".bin","r").read())
-        open(WalletLocation+"/"+message.author.id+".bin","w").write(str(CurBal+GRLC))
-        await Wallets.Bal(message,client)
-    else:
+    Confirmed = False
+    for AddressN in range(0, len(JsonTransaction["vout"])):
+        if (Address == JsonTransaction["vout"][AddressN]["scriptPubKey"]["addresses"][0]) and (TransId not in open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/UsedTransIDs.bin","r").read()):
+            await client.send_message(message.channel,"Deposit Confirmed <@"+message.author.id+">")
+            GRLC = float(JsonTransaction["vout"][AddressN]["value"])
+            open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/UsedTransIDs.bin","a").write("\n"+TransId)
+            CurBal=float(open(WalletLocation+"/"+message.author.id+".bin","r").read())
+            open(WalletLocation+"/"+message.author.id+".bin","w").write(str(CurBal+GRLC))
+            Confirmed = True
+    if Confirmed == False:
         await client.send_message(message.channel,"Invalid TransID <@"+message.author.id+">")
 
 async def PayOut(message,client):
@@ -51,10 +53,12 @@ async def PayOut(message,client):
         Address=message.content.split(" ")[2]
         CurGRLC=open(WalletLocation+"/"+message.author.id+".bin","r").read()
         if GRLCOut<=CurGRLC:
+            msg=await client.send_message(message.channel,"Sending Funds!\nExpect delays on commands!")
             open(WalletLocation+"/"+message.author.id+".bin","w").write(str(float(CurGRLC)-float(GRLCOut)))
-            subprocess.call("./GarlicoinFiles/garlicoin-cli walletpassphrase "+WalletPassPhrase+" 60")
-            TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli sendtoaddress "+Address+" "+str(round(float(GRLCOut)*0.9,3))).decode("utf-8")
-            await client.send_message(message.channel,"Payment Sent. TransId: "+TransId+"\nIt make take around 15mins for the transaction to register!")
+            subprocess.call("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData walletpassphrase "+WalletPassPhrase+" 60")
+            TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData sendtoaddress "+Address+" "+str(round(float(GRLCOut)*0.9,3)),timeout=120).decode("utf-8")
+            await client.delete_message(msg)
+            await client.send_message(message.channel,"Payment Sent. TransId: `"+TransId+"`\nIt make take around 15mins for the transaction to register!")
         else:
             await client.send_message(message.channel,"Not Enough GRLC")
     else:
