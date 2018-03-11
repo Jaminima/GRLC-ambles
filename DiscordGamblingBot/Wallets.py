@@ -20,7 +20,7 @@ async def BalOther(message,client):
 	if os.path.exists(WalletLocation+"/"+Target+".bin"):
 		await client.send_message(message.channel,"<@"+Target+"> Has: ".format(message)+open(WalletLocation+"/"+Target+".bin","r").read()+"GRLC")
 	else:
-		await client.send_message(message.channel,Target+" Does Not Have A Wallet")
+		await client.send_message(message.channel,Target+" Does Not Have A Wallet\ntry `?bal <discordid>`")
 
 async def Pay(message,client):
 	Sender=message.author.id

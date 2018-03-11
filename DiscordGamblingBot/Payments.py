@@ -18,6 +18,13 @@ def CreateNewRecivingAddress():
     address=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -datadir=./GarlicoinFiles/AppData -rpcport=52068 -port=52069 getnewaddress").decode("utf-8")
     return address
 
+def BotBal():
+    baljson=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -datadir=./GarlicoinFiles/AppData -rpcport=52068 -port=52069 -regtest listunspent").decode("utf-8")
+    bal = 0
+    for wallet in json.loads(baljson):
+        bal += float(wallet["amount"])
+    return bal
+
 def Deposit(message,client):
     Target=message.author.id
     Address="ERROR"
@@ -66,6 +73,6 @@ async def PayOut(message,client):
             await client.delete_message(msg)
             await client.send_message(message.channel,"<@"+message.author.id+">Payment Sent. TransId: `"+TransId+"`\nIt may take around 15mins for the transaction to register!")
         else:
-            await client.send_message(message.channel,"<@"+message.author.id+"> Not Enough GRLC or You are trying to withdraw >`1.0GRLC`!")
+            await client.send_message(message.channel,"<@"+message.author.id+"> Not Enough GRLC or You are trying to withdraw >`2.0GRLC`!")
     else:
         await client.send_message(message.channel,"<@"+message.author.id+"> Payouts are disabled!\nThey should be enabled soon.")

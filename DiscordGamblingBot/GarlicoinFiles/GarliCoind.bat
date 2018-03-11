@@ -1,2 +1,2 @@
-garlicoind -datadir=D:\Programming\DiscordGamblingBot\DiscordGamblingBot\GarlicoinFiles\Appdata
+garlicoind -datadir=C:\Users\oscar\Desktop\DiscordGamblingBot\DiscordGamblingBot\GarlicoinFiles\Appdata
 pause

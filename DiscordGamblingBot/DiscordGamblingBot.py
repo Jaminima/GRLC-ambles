@@ -16,13 +16,16 @@ async def on_message(message):
 async def messagehandler(message):
     if message.author.id == "421228709425446912":
         null=1
-    elif message.content.lower().startswith("?bal") and not "?balother" in message.content:
-        await Wallets.Bal(message,client)
-        await client.delete_message(message)
 
-    elif message.content.lower().startswith("?balother"):
-        try: await Wallets.BalOther(message,client)
-        except: await client.send_message(message.channel,"?balother <discordid>")
+    elif message.content.lower().startswith("?bal bot"):
+        await client.send_message(message.channel,"The bot has a total of: "+str(round(Payments.BotBal(),3))+"GRLC")
+
+    elif message.content.lower().startswith("?bal") and not "?balother" in message.content:
+        try :
+            target = message.content.split(" ")[1]#forces error if operand not provided
+            await Wallets.BalOther(message,client)
+        except:
+            await Wallets.Bal(message,client)
         await client.delete_message(message)
 
     elif message.content.lower().startswith("?pay"):
@@ -61,7 +64,7 @@ async def messagehandler(message):
             if message.content.split(" ")[1].lower()=="giveaway":
                 THelp="\n?giveaway join -- Join the giveaway (make sure you have done `?bal` to create your wallet!)\n?giveaway balance -- Gives giveaway value\n?giveaway count -- Participants in giveaway"
             elif message.content.split(" ")[1].lower()=="wallet":
-                THelp="\n?bal -- View you balance\n?balother <userid> -- View balance of someone else\n?pay <userid> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address> -- must be minimum of 2GRLC"
+                THelp="\n?bal <discordid> -- View your/someone else balance\n?bal bot -- View bots balance\n?pay <userid> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address> -- must be minimum of 2GRLC"
             elif message.content.split(" ")[1].lower()=="admin":
                 THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <userid> <GRLC> -- DISABLED\n?shutdown -- What do you think?"
             elif message.content.split(" ")[1].lower()=="jackpot":
