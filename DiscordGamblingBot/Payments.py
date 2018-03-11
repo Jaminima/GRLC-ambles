@@ -24,10 +24,8 @@ def Deposit(message,client):
     if os.path.exists(DepositAddresses+"/"+Target+".bin"):
         Address=open(DepositAddresses+"/"+Target+".bin","r").read()
     else:
-        mes = await client.send_message(message.channel,"Generating Address!\nExpect delays on commands!")
         Address=CreateNewRecivingAddress()
         open(DepositAddresses+"/"+Target+".bin","w").write(Address.splitlines()[0])
-        await client.delete_message(mes)
     return Address
 
 async def Confirm(message,client):
