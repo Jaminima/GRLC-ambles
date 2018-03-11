@@ -64,9 +64,9 @@ async def messagehandler(message):
             if message.content.split(" ")[1].lower()=="giveaway":
                 THelp="\n?giveaway join -- Join the giveaway (make sure you have done `?bal` to create your wallet!)\n?giveaway balance -- Gives giveaway value\n?giveaway count -- Participants in giveaway"
             elif message.content.split(" ")[1].lower()=="wallet":
-                THelp="\n?bal <discordid> -- View your/someone else balance\n?bal bot -- View bots balance\n?pay <userid> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address> -- must be minimum of 2GRLC"
+                THelp="\n?bal <discordid> -- View your/someone else balance\n?bal bot -- View bots balance\n?pay <discordid> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address> -- must be minimum of 2GRLC"
             elif message.content.split(" ")[1].lower()=="admin":
-                THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <userid> <GRLC> -- DISABLED\n?shutdown -- What do you think?"
+                THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <discordid> <GRLC> -- DISABLED\n?shutdown -- What do you think?"
             elif message.content.split(" ")[1].lower()=="jackpot":
                 THelp="\n?jackpot join <GRLC> -- Join the Jackpot with <GRLC>\n?jackpot bal -- Return current Jackpot Balance\n?jackpot count -- Participants in the jackpot"
         except:
