@@ -1,4 +1,4 @@
-import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess,SharedCode
 MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
 os.chdir(MainLocation+"discord")
 import discord,discord.ext
@@ -46,11 +46,7 @@ async def Confirm(message,client):
             await client.send_message(message.channel,"Deposit Confirmed <@"+message.author.id+">")
             GRLC = float(JsonTransaction["vout"][AddressN]["value"])
             open(MainLocation+"UserInfo/UsedTransIDs.bin","a").write("\n"+TransId)
-            try:
-                CurBal=float(open(WalletLocation+"/"+message.author.id+".bin","r").read())
-            except:
-                CurBal=0
-            open(WalletLocation+"/"+message.author.id+".bin","w").write(str(round(CurBal+GRLC,3)))
+            SharedCode.AdjustWallet(message.author.id,round(GRLC,3))
             Confirmed = True
     if Confirmed == False:
         await client.send_message(message.channel,"Invalid TransID <@"+message.author.id+">")
@@ -67,11 +63,14 @@ async def PayOut(message,client):
         CurGRLC=open(WalletLocation+"/"+message.author.id+".bin","r").read()
         if GRLCOut<=CurGRLC and float(GRLCOut)>=2.0:
             msg=await client.send_message(message.channel,"Sending Funds!\nExpect delays on commands!")
-            open(WalletLocation+"/"+message.author.id+".bin","w").write(str(round(float(CurGRLC)-float(GRLCOut),3)))
-            subprocess.call("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData walletpassphrase "+WalletPassPhrase+" 60")
-            TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData sendtoaddress "+Address+" "+str(abs(round(float(GRLCOut)*0.9,3))),timeout=120).decode("utf-8")
+            SharedCode.AdjustWallet(message.author.id,round(-float(GRLCOut),3))
+            subprocess.call("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData walletpassphrase "+WalletPassPhrase+" 10")
+            try:
+                TransId=subprocess.check_output("./GarlicoinFiles/garlicoin-cli -rpcport=52068 -port=52069 -datadir=./GarlicoinFiles/AppData sendtoaddress "+Address+" "+str(abs(round(float(GRLCOut)*0.9,3))),timeout=120).decode("utf-8")
+                await client.send_message(message.channel,"<@"+message.author.id+"> Payment Sent. TransId: `"+TransId+"`\nIt may take around 15mins for the transaction to register!")
+            except:
+                await client.send_message(message.channel,"<@"+message.author.id+"> Payment failed as it took too long.\nPlease try again.")
             await client.delete_message(msg)
-            await client.send_message(message.channel,"<@"+message.author.id+">Payment Sent. TransId: `"+TransId+"`\nIt may take around 15mins for the transaction to register!")
         else:
             await client.send_message(message.channel,"<@"+message.author.id+"> Not Enough GRLC or You are trying to withdraw >`2.0GRLC`!")
     else:

@@ -1,4 +1,4 @@
-import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess,SharedCode
 MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
 os.chdir(MainLocation+"discord")
 import discord,discord.ext
@@ -30,7 +30,7 @@ async def messagehandler(message):
 
     elif message.content.lower().startswith("?pay"):
         try: await Wallets.Pay(message,client)
-        except: await client.send_message(message.channel,"?pay <discordid> <amount>")
+        except: await client.send_message(message.channel,"?pay <mention> <amount>")
         await client.delete_message(message)
 
 #    elif message.content.lower().startswith("?createfunds"):
@@ -59,16 +59,18 @@ async def messagehandler(message):
 
     elif message.content.lower().startswith("?help"):
         Help="<@"+message.author.id+">\n-------GRLC-ambles-------\nFeel free to donate GRLC using `?donate`\nTo setup your wallet type `?bal` and you can now enter a giveaway or `?deposit`.\nFor more help contact an @Admin or type `?help <option>`\n\n"
-        THelp="?help giveaway -- Show help for giveaways\n?help wallet -- Show help for wallets\n?help admin -- Show help for admin commands\n?help jackpot -- Show help for jackpot"
+        THelp="?help giveaway -- Show help for giveaways\n?help wallet -- Show help for wallets\n?help admin -- Show help for admin commands\n?help jackpot -- Show help for jackpot\n?help memes -- Show help for memes"
         try:
             if message.content.split(" ")[1].lower()=="giveaway":
                 THelp="\n?giveaway join -- Join the giveaway (make sure you have done `?bal` to create your wallet!)\n?giveaway balance -- Gives giveaway value\n?giveaway count -- Participants in giveaway"
             elif message.content.split(" ")[1].lower()=="wallet":
-                THelp="\n?bal <discordid> -- View your/someone else balance\n?bal bot -- View bots balance\n?pay <discordid> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address> -- must be minimum of 2GRLC"
+                THelp="\n?bal <mention> -- View your/someone else balance\n?bal bot -- View bots balance\n?pay <mention> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address> -- must be minimum of 2GRLC"
             elif message.content.split(" ")[1].lower()=="admin":
-                THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <discordid> <GRLC> -- DISABLED\n?shutdown -- What do you think?"
+                THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <mention> <GRLC> -- DISABLED\n?shutdown -- What do you think?"
             elif message.content.split(" ")[1].lower()=="jackpot":
                 THelp="\n?jackpot join <GRLC> -- Join the Jackpot with <GRLC>\n?jackpot bal -- Return current Jackpot Balance\n?jackpot count -- Participants in the jackpot"
+            elif message.content.split(" ")[1].lower()=="memes":
+                THelp="\n?bad <mention> -- Tell someone they are bad!\n?good <mention> -- Tell someone they are good"
         except:
             null=0
         await client.send_message(message.channel,Help+THelp)
@@ -134,6 +136,14 @@ async def messagehandler(message):
 
     elif message.content.lower().startswith("?about"):
         await client.send_message(message.channel,"<@"+message.author.id+"> This is a Disocrd Bot aimed at gambling GRLC\nCreated by <@251754144958906369>\nFor help type `?help`")
+
+    elif message.content.lower().startswith("?bad"):
+        try: await client.send_message(message.channel,"<@"+SharedCode.DiscordID(message.content.split(" ")[1])+"> Is Bad!")
+        except: await client.send_message(message.channel,"try `?bad <mention>`")
+
+    elif message.content.lower().startswith("?good"):
+        try: await client.send_message(message.channel,"<@"+SharedCode.DiscordID(message.content.split(" ")[1])+"> Is Good!")
+        except: await client.send_message(message.channel,"try `?good <mention>`")
 
 @client.event
 async def on_ready():

@@ -1,4 +1,4 @@
-import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess,SharedCode
 MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
 os.chdir(MainLocation+"discord")
 import discord,discord.ext
@@ -17,8 +17,7 @@ async def AddParticipant(message,client):
         CurBal = float( open(WalletLocation+"/"+message.author.id+".bin","r").read())
         GRLC = abs(float( message.content.split(" ")[2]))
         if CurBal>=GRLC and message.author.id not in Participants and GRLC>=0.1:
-            NewBal = round(CurBal-GRLC,3)
-            open(WalletLocation+"/"+message.author.id+".bin","w").write(str(NewBal))
+            SharedCode.AdjustWallet(message.author.id,round(-GRLC,3))
             Participants.append(message.author.id)
             Deposited.append(GRLC)
             await client.send_message(message.channel,"<@"+message.author.id+"> You deposited "+str(GRLC)+"GRLC into the pot!")
@@ -53,6 +52,7 @@ async def FinishCheck(message,client):
         await client.send_message(message.channel,"<@"+WinnerID+"> Won "+str(TotalGRLC)+"GRLC!")
         CurGLRC=float( open(WalletLocation+"/"+WinnerID+".bin","r").read())
         open(WalletLocation+"/"+WinnerID+".bin","w").write(str(round(TotalGRLC+CurGLRC,3)))
+        SharedCode.AdjustWallet(WinnerID,round(TotalGRLC,3))
         Participants=[]
         Deposited=[]
         Finishing=False
@@ -70,6 +70,5 @@ async def ReturnFunds(message,client):
     AtWho = ""
     for Pos in range(0,len(Participants)):
         AtWho+="<@"+Participants[Pos]+"> "
-        CurBal =float( open(WalletLocation+"/"+Participants[Pos]+".bin","r").read())
-        open(WalletLocation+"/"+Participants[Pos]+".bin","w").write(str(round(CurBal+Deposited[Pos],3)))
+        SharedCode.AdjustWallet(Participants[Pos],round(Deposited[Pos],3))
     await client.send_message(message.channel,AtWho+"The Jackpot has terminated. Your GRLC has been returned!")

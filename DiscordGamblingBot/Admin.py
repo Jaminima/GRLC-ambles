@@ -1,4 +1,4 @@
-import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess,SharedCode
 MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
 os.chdir(MainLocation+"discord")
 import discord,discord.ext
@@ -9,12 +9,12 @@ DepositAddresses = MainLocation+"/UserInfo/DepositAddresses"
 AdminIDs = open(MainLocation+"/UserInfo/AdminIDs.bin","r").read()
 
 async def CreateFunds(message,client):
-	Reciver=message.content.split(" ")[1]
+	Reciver=SharedCode.DiscordID(message.content.split(" ")[1])
 	TransferedAmount = float(message.content.split(" ")[2])
 	ReciverBal = float( open(WalletLocation+"/"+Reciver+".bin","r").read())
 	if message.author.id in AdminIDs:
 		try:
-			open(WalletLocation+"/"+Reciver+".bin","w").write(str(ReciverBal+TransferedAmount))
+			SharedCode.AdjustWallet(Reciver,TransferedAmount)
 			await client.send_message(message.channel,("<@"+Reciver+"> Has been awarded: "+str(TransferedAmount)+"GRLC"))
 		except:
 			await client.send_message(message.channel,"Recipiant Does not have a wallet")

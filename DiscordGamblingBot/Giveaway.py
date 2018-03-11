@@ -1,4 +1,4 @@
-import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess,SharedCode
 MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
 os.chdir(MainLocation+"discord")
 import discord,discord.ext
@@ -45,7 +45,7 @@ def EndGiveaway(client):
 	Winner = Participants[random.randint(0,len(Participants)-1)]
 	CurBal = float( open(WalletLocation+"/"+Winner+".bin","r").read())
 	GiveawayValue = float( open(MainLocation+"UserInfo/GiveAwayValue.bin","r").read())
-	open(WalletLocation+"/"+Winner+".bin","w").write(str(round(CurBal+GiveawayValue,3)))
+	SharedCode.AdjustWallet(Winner,round(GiveawayValue,3))
 	open(MainLocation+"UserInfo/GiveAwayValue.bin","w").write("0")
 	return Winner
 
