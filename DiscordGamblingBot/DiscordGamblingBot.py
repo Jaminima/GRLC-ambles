@@ -1,14 +1,12 @@
-import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot
-os.chdir("D:\Programming\DiscordGamblingBot\DiscordGamblingBot\discord")
-import discord,threading,subprocess
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess
+MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
+os.chdir(MainLocation+"discord")
+import discord,discord.ext
 os.chdir("../")
-from _thread import *
-from discord.ext import commands
-
 client = discord.Client()
-WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
-DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
-AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/AdminIDs.bin","r").read()
+WalletLocation = MainLocation+"UserInfo/Wallets"
+DepositAddresses = MainLocation+"/UserInfo/DepositAddresses"
+AdminIDs = open(MainLocation+"/UserInfo/AdminIDs.bin","r").read()
 Payments.RunWallet()
 
 @client.event
@@ -38,13 +36,11 @@ async def messagehandler(message):
 #        await client.delete_message(message)
 
     elif message.content.lower().startswith("?deposit"):
-        mes = await client.send_message(message.channel,"Generating Address!\nExpect delays on commands!")
         try:
             await client.send_message(message.channel,"<@"+message.author.id+"> Deposit into: `"+Payments.Deposit(message,client)+"` Then type `?confirm <transid>`")
         except:
             await client.send_message(message.channel,"<@"+message.author.id+"> Failed to load/make deposit address!\nWait a min and type `?deposit` again.")
         await client.delete_message(message)
-        await client.delete_message(mes)
 
     elif message.content.lower().startswith("?confirm"):
         try: await Payments.Confirm(message,client)
@@ -74,7 +70,7 @@ async def messagehandler(message):
         await client.delete_message(message)
 
     elif message.content.lower().startswith("?giveaway bal"):
-        bal = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","r").read()
+        bal = open(MainLocation+"UserInfo/GiveAwayValue.bin","r").read()
         if bal != 0:
             await client.send_message(message.channel,"Giveaway value is: "+bal+"GRLC")
         else:

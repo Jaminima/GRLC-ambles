@@ -1,11 +1,12 @@
-import os ,random,Wallets,Payments,Admin,Giveaway
-os.chdir("D:\Programming\DiscordGamblingBot\DiscordGamblingBot\discord")
-import discord
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess
+MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
+os.chdir(MainLocation+"discord")
+import discord,discord.ext
 os.chdir("../")
-
-WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
-DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
-AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/AdminIDs.bin","r").read()
+client = discord.Client()
+WalletLocation = MainLocation+"UserInfo/Wallets"
+DepositAddresses = MainLocation+"UserInfo/DepositAddresses"
+AdminIDs = open(MainLocation+"UserInfo/AdminIDs.bin","r").read()
 
 Participants = []
 
@@ -20,7 +21,7 @@ def GetTransaction(transid):
 	return http.request('GET',"https://garli.co.in/api/getrawtransaction?txid="+transid+"&decrypt=1").data.decode('utf-8')
 
 async def AddParticipant(message,client):
-	if open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","r").read() == "0":
+	if open(MainLocation+"UserInfo/GiveAwayValue.bin","r").read() == "0":
 		await client.send_message(message.channel,"<@"+message.author.id+"> Giveaway is closed.")
 	else:
 		if message.author.id not in Participants:
@@ -32,10 +33,10 @@ async def AddParticipant(message,client):
 async def StartGiveaway(message,client):
 	giveaway=message.content.split(" ")[2]
 	Participants=[]
-	CurWallet=float(open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveawayWallet.bin","r").read())
+	CurWallet=float(open(MainLocation+"UserInfo/GiveawayWallet.bin","r").read())
 	if CurWallet >=round(float(giveaway),3):
-		open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","w").write(giveaway)
-		open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveawayWallet.bin","w").write(str(round(CurWallet-float(giveaway),3)))
+		open(MainLocation+"UserInfo/GiveAwayValue.bin","w").write(giveaway)
+		open(MainLocation+"UserInfo/GiveawayWallet.bin","w").write(str(round(CurWallet-float(giveaway),3)))
 		await client.send_message(message.channel,"Created Giveaway.\nTo join type `?giveaway join`")
 	else:
 		await client.send_message(message.channel,"Not Enough GRLC in Bots GiveawayWallet")
@@ -43,16 +44,16 @@ async def StartGiveaway(message,client):
 def EndGiveaway(client):
 	Winner = Participants[random.randint(0,len(Participants)-1)]
 	CurBal = float( open(WalletLocation+"/"+Winner+".bin","r").read())
-	GiveawayValue = float( open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","r").read())
+	GiveawayValue = float( open(MainLocation+"UserInfo/GiveAwayValue.bin","r").read())
 	open(WalletLocation+"/"+Winner+".bin","w").write(str(round(CurBal+GiveawayValue,3)))
-	open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","w").write("0")
+	open(MainLocation+"UserInfo/GiveAwayValue.bin","w").write("0")
 	return Winner
 
 def GiveawayCount():
 	return len(Participants)
 
 async def ReturnFunds(message,client):
-	GiveawayValue = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","r").read()
-	CurWallet = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveawayWallet.bin","r").read()
-	open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveawayWallet.bin","w").write(str(round(float(CurWallet)+float(GiveawayValue))))
-	open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/GiveAwayValue.bin","w").write("0")
+	GiveawayValue = open(MainLocation+"UserInfo/GiveAwayValue.bin","r").read()
+	CurWallet = open(MainLocation+"UserInfo/GiveawayWallet.bin","r").read()
+	open(MainLocation+"UserInfo/GiveawayWallet.bin","w").write(str(round(float(CurWallet)+float(GiveawayValue))))
+	open(MainLocation+"UserInfo/GiveAwayValue.bin","w").write("0")

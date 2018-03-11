@@ -1,14 +1,15 @@
-import os ,random,Wallets,Payments,Admin,Giveaway
-os.chdir("D:\Programming\DiscordGamblingBot\DiscordGamblingBot\discord")
-import discord
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess
+MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
+os.chdir(MainLocation+"discord")
+import discord,discord.ext
 os.chdir("../")
-
-WalletPassPhrase = input("WalletPassPhrase (blank for no payouts): ")
-WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
-DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
-AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/AdminIDs.bin","r").read()
+client = discord.Client()
+WalletLocation = MainLocation+"UserInfo/Wallets"
+DepositAddresses = MainLocation+"UserInfo/DepositAddresses"
+AdminIDs = open(MainLocation+"UserInfo/AdminIDs.bin","r").read()
 
 import subprocess,json
+WalletPassPhrase=input("Wallet Passphrase: ")
 
 def RunWallet():
     subprocess.Popen("./GarlicoinFiles/garlicoind -datadir=./GarlicoinFiles/AppData -rpcport=52068 -port=52069")
@@ -23,9 +24,10 @@ def Deposit(message,client):
     if os.path.exists(DepositAddresses+"/"+Target+".bin"):
         Address=open(DepositAddresses+"/"+Target+".bin","r").read()
     else:
-        print("Generating Address")
+        mes = await client.send_message(message.channel,"Generating Address!\nExpect delays on commands!")
         Address=CreateNewRecivingAddress()
         open(DepositAddresses+"/"+Target+".bin","w").write(Address.splitlines()[0])
+        await client.delete_message(mes)
     return Address
 
 async def Confirm(message,client):
@@ -35,10 +37,10 @@ async def Confirm(message,client):
     JsonTransaction = json.loads(TransactionContent)
     Confirmed = False
     for AddressN in range(0, len(JsonTransaction["vout"])):
-        if (Address == JsonTransaction["vout"][AddressN]["scriptPubKey"]["addresses"][0]) and (TransId not in open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/UsedTransIDs.bin","r").read()):
+        if (Address == JsonTransaction["vout"][AddressN]["scriptPubKey"]["addresses"][0]) and (TransId not in open(MainLocation+"UserInfo/UsedTransIDs.bin","r").read()):
             await client.send_message(message.channel,"Deposit Confirmed <@"+message.author.id+">")
             GRLC = float(JsonTransaction["vout"][AddressN]["value"])
-            open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/UsedTransIDs.bin","a").write("\n"+TransId)
+            open(MainLocation+"UserInfo/UsedTransIDs.bin","a").write("\n"+TransId)
             try:
                 CurBal=float(open(WalletLocation+"/"+message.author.id+".bin","r").read())
             except:

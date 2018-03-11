@@ -1,11 +1,12 @@
-import os ,random,Wallets,Payments,Admin,Giveaway
-os.chdir("D:\Programming\DiscordGamblingBot\DiscordGamblingBot\discord")
-import discord
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess
+MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
+os.chdir(MainLocation+"discord")
+import discord,discord.ext
 os.chdir("../")
-
-WalletLocation = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/Wallets"
-DepositAddresses = "D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/DepositAddresses"
-AdminIDs = open("D:/Programming/DiscordGamblingBot/DiscordGamblingBot/UserInfo/AdminIDs.bin","r").read()
+client = discord.Client()
+WalletLocation = MainLocation+"UserInfo/Wallets"
+DepositAddresses = MainLocation+"/UserInfo/DepositAddresses"
+AdminIDs = open(MainLocation+"/UserInfo/AdminIDs.bin","r").read()
 
 async def CreateFunds(message,client):
 	Reciver=message.content.split(" ")[1]
