@@ -1,4 +1,4 @@
-import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess,SharedCode
+import os ,random,Wallets,Payments,Admin,Giveaway,Jackpot,threading,subprocess,SharedCode,Roulette
 MainLocation="C:/Users/oscar/Desktop/DiscordGamblingBot/DiscordGamblingBot/"
 os.chdir(MainLocation+"discord")
 import discord,discord.ext
@@ -120,6 +120,9 @@ async def messagehandler(message):
         await Jackpot.CountParticipants(message,client)
         await client.delete_message(message)
 
+    elif message.content.lower().startswith("?jackpot increase"):
+        await Jackpot.IncreaseFunds(message,client)
+
     elif message.content.lower().startswith("?jackpot"):
         await client.send_message(message.channel,"try `?giveaway join/bal/count`")
 
@@ -145,10 +148,14 @@ async def messagehandler(message):
         try: await client.send_message(message.channel,"<@"+SharedCode.DiscordID(message.content.split(" ")[1])+"> Is Good!")
         except: await client.send_message(message.channel,"try `?good <mention>`")
 
+    #elif message.content.lower().startswith("?roulette join"):
+        #await Roulette.AddParticipant(message,client)
+
 @client.event
 async def on_ready():
     print('Logged in as')
     print(client.user.name)
     print(client.user.id)
     print('------')
+    #await Roulette.Scheduler(client)
 client.run('NDIxMjI4NzA5NDI1NDQ2OTEy.DYKLeA.cQqjgdyV6PaoPxV-Lf78ZA8X8Mo')

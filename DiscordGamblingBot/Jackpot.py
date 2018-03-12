@@ -72,3 +72,17 @@ async def ReturnFunds(message,client):
         AtWho+="<@"+Participants[Pos]+"> "
         SharedCode.AdjustWallet(Participants[Pos],round(Deposited[Pos],3))
     await client.send_message(message.channel,AtWho+"The Jackpot has terminated. Your GRLC has been returned!")
+
+async def IncreaseFunds(message,client):
+    DiscordId=message.author.id
+    Out=round(float(message.content.split(" ")[2]),3)
+    CurGRLC = float( open(WalletLocation+"/"+DiscordId+".bin","r").read())
+    if DiscordId in Participants and CurGRLC>=Out:
+        print("Yay")
+        for pos in range(0,len(Participants)):
+            if Participants[pos]==DiscordId:
+                Deposited[pos]+=Out
+                await client.send_message(message.channel,"<@"+DiscordId+"> You now have deposited: "+str(Deposited[pos]))
+    else:
+        print("Nay")
+        await client.send_message(message.channel,"<@"+DiscordId+"> You are yet to enter the jackpot or dont have enough GRLC!\nType `?jackpot join <grlc>` to participate.")
