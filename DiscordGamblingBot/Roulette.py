@@ -33,7 +33,7 @@ async def AddParticipant(message,client):
 
 async def FinishGame(channel,client):
     global Participants,Deposited,Colour
-    if datetime.datetime.now().minute%1==0 and len(Participants)>=2:
+    if datetime.datetime.now().minute%10==0 and len(Participants)>=2:
         WinningColourNum=random.randint(0,37)
         WinningColour=""
         Multiplyer=2
@@ -54,6 +54,20 @@ async def FinishGame(channel,client):
         Participants=[]
         Deposited=[]
         Colour=[]
+
+async def IncreaseFunds(message,client):
+    DiscordId=message.author.id
+    Out=abs(round(float(message.content.split(" ")[2]),3))
+    CurGRLC = float( open(WalletLocation+"/"+DiscordId+".bin","r").read())
+    if DiscordId in Participants and CurGRLC>=Out:
+        print("Yay")
+        for pos in range(0,len(Participants)):
+            if Participants[pos]==DiscordId:
+                Deposited[pos]+=Out
+                await client.send_message(message.channel,"<@"+DiscordId+"> You now have deposited: "+str(Deposited[pos]))
+    else:
+        print("Nay")
+        await client.send_message(message.channel,"<@"+DiscordId+"> You are yet to enter the jackpot or dont have enough GRLC!\nType `?roulette join <grlc>` to participate.")
 
 async def Scheduler(client):
     while True:

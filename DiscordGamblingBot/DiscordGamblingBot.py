@@ -59,18 +59,22 @@ async def messagehandler(message):
 
     elif message.content.lower().startswith("?help"):
         Help="<@"+message.author.id+">\n-------GRLC-ambles-------\nFeel free to donate GRLC using `?donate`\nTo setup your wallet type `?bal` and you can now enter a giveaway or `?deposit`.\nFor more help contact an @Admin or type `?help <option>`\n\n"
-        THelp="?help giveaway -- Show help for giveaways\n?help wallet -- Show help for wallets\n?help admin -- Show help for admin commands\n?help jackpot -- Show help for jackpot\n?help memes -- Show help for memes"
+        THelp="?help notification\n?help giveaway\n?help wallet\n?help roulette\n?help admin\n?help jackpot\n?help memes"
         try:
             if message.content.split(" ")[1].lower()=="giveaway":
-                THelp="\n?giveaway join -- Join the giveaway (make sure you have done `?bal` to create your wallet!)\n?giveaway balance -- Gives giveaway value\n?giveaway count -- Participants in giveaway"
+                THelp="?giveaway join -- Join the giveaway (make sure you have done `?bal` to create your wallet!)\n?giveaway balance -- Gives giveaway value\n?giveaway count -- Participants in giveaway"
             elif message.content.split(" ")[1].lower()=="wallet":
-                THelp="\n?bal <mention> -- View your/someone else balance\n?bal bot -- View bots balance\n?pay <mention> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address> -- must be minimum of 2GRLC"
+                THelp="?bal <mention> -- View your/someone else balance\n?bal bot -- View bots balance\n?pay <mention> <amount>\n?deposit -- Gives an address for you to pay into\n?confirm <transid> -- Confirm payment\n?withdraw <amount> <address> -- must be minimum of 2GRLC"
             elif message.content.split(" ")[1].lower()=="admin":
-                THelp="\n?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <mention> <GRLC> -- DISABLED\n?shutdown -- What do you think?"
+                THelp="?giveaway start <GRLC> -- Start a giveaway\n?giveaway end -- End the giveaway\n?createfunds <mention> <GRLC> -- DISABLED\n?shutdown -- What do you think?"
             elif message.content.split(" ")[1].lower()=="jackpot":
-                THelp="\n?jackpot join <GRLC> -- Join the Jackpot with <GRLC>\n?jackpot bal -- Return current Jackpot Balance\n?jackpot count -- Participants in the jackpot"
+                THelp="?jackpot join <GRLC> -- Join the Jackpot with <GRLC>\n?jackpot bal -- Return current Jackpot Balance\n?jackpot count -- Participants in the jackpot"
             elif message.content.split(" ")[1].lower()=="memes":
-                THelp="\n?bad <mention> -- Tell someone they are bad!\n?good <mention> -- Tell someone they are good"
+                THelp="?bad <mention> -- Tell someone they are bad!\n?good <mention> -- Tell someone they are good"
+            elif message.content.split(" ")[1].lower()=="roulette":
+                THelp="?roulette about -- Some information about the function of the game.\n?roulette join <GRLC> <Red/Green/Black> -- Join Roulette with bet on colour.\n?roulette increase <GRLC> -- Increase your bet by the value."
+            elif message.content.split(" ")[1].lower()=="notification":
+                THelp="?notification <enable/disbale> -- With this on we will notify you via a mention when a update/event occurs.\nIf it is disabled you wont get these as we wont mention everyone!"
         except:
             null=0
         await client.send_message(message.channel,Help+THelp)
@@ -148,8 +152,26 @@ async def messagehandler(message):
         try: await client.send_message(message.channel,"<@"+SharedCode.DiscordID(message.content.split(" ")[1])+"> Is Good!")
         except: await client.send_message(message.channel,"try `?good <mention>`")
 
-    #elif message.content.lower().startswith("?roulette join"):
-        #await Roulette.AddParticipant(message,client)
+    elif message.content.lower().startswith("?roulette join"):
+        try: await Roulette.AddParticipant(message,client)
+        except: await client.send_message(message.channel,"try `?roulette join <GRLC> <Red/Green/Black>`")
+
+    elif message.content.lower().startswith("?roulette increase"):
+        try: await Roulette.IncreaseFunds(message,client)
+        except: await client.send_message(message.channel,"try `?roulette increase <GRLC>`")
+
+    elif message.content.lower().startswith("?roulette about"):
+        await client.send_message(message.channel,"<@"+message.author.id+"> Roulette works by the user choosing a colour,\nA virtual bal (Random Number) is rolled.\nIf it lands on 0 the multiplyer is 4x.\nOtherwise it is 2x\n\nTo participate type `?roulette join <GRLC> <Red/Green/Black>`.\nThe wheel will be spun every ten minutes.")
+
+    elif message.content.lower().startswith("?notification enable"):
+        Role=discord.utils.get(message.server.roles, name="NotificationSquad")
+        await client.add_roles(message.author,Role)
+        await client.send_message(message.channel,"<@"+message.author.id+"> Welcome to the NotificationSquad!")
+
+    elif message.content.lower().startswith("?notification disable"):
+        Role=discord.utils.get(message.server.roles, name="NotificationSquad")
+        await client.remove_roles(message.author,Role)
+        await client.send_message(message.channel,"<@"+message.author.id+"> You have left the NotificationSquad!")
 
 @client.event
 async def on_ready():
@@ -157,5 +179,5 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-    #await Roulette.Scheduler(client)
+    await Roulette.Scheduler(client)
 client.run('NDIxMjI4NzA5NDI1NDQ2OTEy.DYKLeA.cQqjgdyV6PaoPxV-Lf78ZA8X8Mo')

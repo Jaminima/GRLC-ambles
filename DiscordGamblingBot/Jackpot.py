@@ -75,7 +75,7 @@ async def ReturnFunds(message,client):
 
 async def IncreaseFunds(message,client):
     DiscordId=message.author.id
-    Out=round(float(message.content.split(" ")[2]),3)
+    Out=abs(round(float(message.content.split(" ")[2]),3))
     CurGRLC = float( open(WalletLocation+"/"+DiscordId+".bin","r").read())
     if DiscordId in Participants and CurGRLC>=Out:
         print("Yay")
